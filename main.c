@@ -29,8 +29,9 @@ int  lerId(const char *msg, char *saida);
 int  lerDescricao(const char *msg, char *saida);
 int  buscarPorId(Veiculo *lista, int qtd, const char *id);
 void cadastrarVeiculo(Veiculo **lista, int *qtd, int *capacidade,int mapa[FILEIRAS][COLUNAS]);
-void consultarVeiculo(Veiculo *lista, int qtd);           
-void atualizarVeiculo(Veiculo *lista, int qtd);           
+void consultarVeiculo(Veiculo *lista, int qtd);
+void atualizarVeiculo(Veiculo *lista, int qtd); 
+void moverVeiculo(Veiculo *lista, int qtd, int mapa[FILEIRAS][COLUNAS]);
 void exibirMenu(void);
 
 /* ---------- Leitura segura ---------- */
@@ -205,6 +206,34 @@ void atualizarVeiculo(Veiculo *lista, int qtd) {
     printf("Dados atualizados com sucesso.\n");
 }
 
+void moverVeiculo(Veiculo *lista, int qtd, int mapa[FILEIRAS][COLUNAS]) {
+    if (qtd == 0) { printf("Nenhum veiculo cadastrado.\n"); return; }
+    char id[TAM_ID + 1];
+    if (!lerId("Identificador: ", id)) return;
+    int idx = buscarPorId(lista, qtd, id);
+    if (idx == -1) { printf("Veiculo nao localizado.\n"); return; }
+
+    int fileira, coluna;
+    if (!lerInteiro("Nova fileira (1-4): ", 1, FILEIRAS, &fileira)) return;
+    if (!lerInteiro("Nova coluna (1-5): ", 1, COLUNAS, &coluna)) return;
+
+    Veiculo *v = &lista[idx];
+    if (v->fileira == fileira && v->coluna == coluna) {
+        printf("Veiculo ja esta em F%d/C%d.\n", fileira, coluna);
+        return;
+    }
+    if (mapa[fileira - 1][coluna - 1] != 0) {
+        printf("Vaga F%d/C%d esta ocupada.\n", fileira, coluna);
+        return;
+    }
+
+    mapa[v->fileira - 1][v->coluna - 1] = 0;
+    mapa[fileira - 1][coluna - 1] = 1;
+    v->fileira = fileira;
+    v->coluna  = coluna;
+    printf("Veiculo %s movido para F%d/C%d.\n", id, fileira, coluna);
+}
+
 /* ---------- Menu ---------- */
 void exibirMenu(void) {
     printf("\n===== ESTACIONAMENTO =====\n");
@@ -240,6 +269,7 @@ int main(void) {
             case 1: cadastrarVeiculo(&lista, &qtd, &capacidade, mapa); break;
             case 2: consultarVeiculo(lista, qtd);   break;   
             case 3: atualizarVeiculo(lista, qtd);   break;
+            case 4: moverVeiculo(lista, qtd, mapa);   break;
             case 0: printf("Encerrando e liberando memoria...\n");      break;   
             default: printf("Funcionalidade em desenvolvimento.\n");    break;
         }
