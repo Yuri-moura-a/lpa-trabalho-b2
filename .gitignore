@@ -1,0 +1,9 @@
+# Compilados
+*.o
+*.out
+estacionamento
+a.exe
+
+# Editor
+.vscode/
+*.swp
