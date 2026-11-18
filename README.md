@@ -28,14 +28,18 @@ listagem, mapa e relatório de ocupação.
 ```bash
 gcc -std=c11 -Wall -Wextra -pedantic main.c -o main
 ./main
+```
 
 ## Declaração individual
 
 Yuri
 
-Atuei na realização dos commits 1,3,5,7
-IA generativa: Usurfrui para apoio educacional para criação do Trabalho Bimestral, a IA utilziada foi o Deepseek
+    Atuei na realização dos commits 1,3,5,7
+
+    IA generativa: Usurfrui para apoio educacional para criação do Trabalho Bimestral, a IA utilziada foi o Deepseek
 
 Pedro
-Atuei na realização dos commits 2,4,6,8
-IA generativa: Usurfrui para apoio educacional para criação do Trabalho Bimestral, a IA utilziada foi o Deepseek
+
+    Atuei na realização dos commits 2,4,6,8
+
+    IA generativa: Usurfrui para apoio educacional para criação do Trabalho Bimestral, a IA utilziada foi o Deepseek
