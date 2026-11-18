@@ -29,6 +29,8 @@ int  lerId(const char *msg, char *saida);
 int  lerDescricao(const char *msg, char *saida);
 int  buscarPorId(Veiculo *lista, int qtd, const char *id);
 void cadastrarVeiculo(Veiculo **lista, int *qtd, int *capacidade,int mapa[FILEIRAS][COLUNAS]);
+void consultarVeiculo(Veiculo *lista, int qtd);           
+void atualizarVeiculo(Veiculo *lista, int qtd);           
 void exibirMenu(void);
 
 /* ---------- Leitura segura ---------- */
@@ -162,6 +164,47 @@ void cadastrarVeiculo(Veiculo **lista, int *qtd, int *capacidade,
     printf("Veiculo cadastrado: %s | F%d/C%d\n", id, fileira, coluna);
 }
 
+void consultarVeiculo(Veiculo *lista, int qtd) {
+    if (qtd == 0) { printf("Nenhum veiculo cadastrado.\n"); return; }
+    char id[TAM_ID + 1];
+    if (!lerId("Identificador: ", id)) return;
+    int idx = buscarPorId(lista, qtd, id);
+    if (idx == -1) { printf("Veiculo nao localizado.\n"); return; }
+    Veiculo *v = &lista[idx];
+    printf("\n--- Dados do veiculo ---\n");
+    printf("ID:        %s\n", v->id);
+    printf("Descricao: %s\n", v->descricao);
+    printf("Categoria: %s\n", v->categoria == 1 ? "Carro" : "Moto");
+    printf("Posicao:   F%d/C%d\n\n", v->fileira, v->coluna);
+}
+
+void atualizarVeiculo(Veiculo *lista, int qtd) {
+    if (qtd == 0) { printf("Nenhum veiculo cadastrado.\n"); return; }
+    char id[TAM_ID + 1];
+    if (!lerId("Identificador: ", id)) return;
+    int idx = buscarPorId(lista, qtd, id);
+    if (idx == -1) { printf("Veiculo nao localizado.\n"); return; }
+
+    int opcao;
+    printf("1 - Atualizar descricao\n");
+    printf("2 - Atualizar categoria\n");
+    printf("3 - Atualizar ambos\n");
+    if (!lerInteiro("O que deseja atualizar: ", 1, 3, &opcao)) return;
+
+    char novaDesc[TAM_DESC + 1];
+    int  novaCat;
+
+    if (opcao == 1 || opcao == 3)
+        if (!lerDescricao("Nova descricao: ", novaDesc)) return;
+    if (opcao == 2 || opcao == 3)
+        if (!lerInteiro("Nova categoria (1=carro, 2=moto): ", 1, 2, &novaCat)) return;
+
+    if (opcao == 1 || opcao == 3) strcpy(lista[idx].descricao, novaDesc);
+    if (opcao == 2 || opcao == 3) lista[idx].categoria = novaCat;
+
+    printf("Dados atualizados com sucesso.\n");
+}
+
 /* ---------- Menu ---------- */
 void exibirMenu(void) {
     printf("\n===== ESTACIONAMENTO =====\n");
@@ -195,9 +238,12 @@ int main(void) {
 
         switch (opcao) {
             case 1: cadastrarVeiculo(&lista, &qtd, &capacidade, mapa); break;
-            case 0: printf("Encerrando e liberando memoria...\n");      break;
+            case 2: consultarVeiculo(lista, qtd);   break;   
+            case 3: atualizarVeiculo(lista, qtd);   break;
+            case 0: printf("Encerrando e liberando memoria...\n");      break;   
             default: printf("Funcionalidade em desenvolvimento.\n");    break;
         }
+
     } while (opcao != 0);
 
     free(lista);
