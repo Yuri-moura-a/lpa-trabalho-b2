@@ -32,7 +32,10 @@ void cadastrarVeiculo(Veiculo **lista, int *qtd, int *capacidade,int mapa[FILEIR
 void consultarVeiculo(Veiculo *lista, int qtd);
 void atualizarVeiculo(Veiculo *lista, int qtd); 
 void moverVeiculo(Veiculo *lista, int qtd, int mapa[FILEIRAS][COLUNAS]);
-void removerVeiculo(Veiculo *lista, int *qtd, int mapa[FILEIRAS][COLUNAS]);  // ◀── ADICIONAR
+void removerVeiculo(Veiculo *lista, int *qtd, int mapa[FILEIRAS][COLUNAS]);
+void listarVeiculos(Veiculo *lista, int qtd);
+void exibirMapa(int mapa[FILEIRAS][COLUNAS]);
+void exibirRelatorio(Veiculo *lista, int qtd, int mapa[FILEIRAS][COLUNAS]);
 void exibirMenu(void);
 
 /* ---------- Leitura segura ---------- */
@@ -250,6 +253,54 @@ void removerVeiculo(Veiculo *lista, int *qtd, int mapa[FILEIRAS][COLUNAS]) {
     printf("Veiculo %s removido. Vaga liberada.\n", id);
 }
 
+void listarVeiculos(Veiculo *lista, int qtd) {
+    if (qtd == 0) { printf("Nenhum veiculo cadastrado.\n"); return; }
+    printf("\n%-8s %-62s %-6s %-7s\n", "ID", "Descricao", "Categ.", "Posicao");
+    printf("----------------------------------------------------------------------\n");
+    for (int i = 0; i < qtd; i++) {
+        printf("%-8s %-62s %-6s F%d/C%d\n",
+               lista[i].id,
+               lista[i].descricao,
+               lista[i].categoria == 1 ? "Carro" : "Moto",
+               lista[i].fileira, lista[i].coluna);
+    }
+    printf("\n");
+}
+
+void exibirMapa(int mapa[FILEIRAS][COLUNAS]) {
+    printf("\n     C1 C2 C3 C4 C5\n");
+    for (int i = 0; i < FILEIRAS; i++) {
+        printf("F%d | ", i + 1);
+        for (int j = 0; j < COLUNAS; j++)
+            printf("%c  ", mapa[i][j] == 0 ? '.' : 'X');
+        printf("\n");
+    }
+    printf("Legenda: X = ocupada, . = livre\n\n");
+}
+
+void exibirRelatorio(Veiculo *lista, int qtd, int mapa[FILEIRAS][COLUNAS]) {
+    int ocupadas = 0, carros = 0, motos = 0;
+    for (int i = 0; i < FILEIRAS; i++)
+        for (int j = 0; j < COLUNAS; j++)
+            if (mapa[i][j] == 1) ocupadas++;
+    for (int i = 0; i < qtd; i++) {
+        if (lista[i].categoria == 1) carros++;
+        else                         motos++;
+    }
+    int livres = TOTAL_VAGAS - ocupadas;
+    float pct = (ocupadas / (float)TOTAL_VAGAS) * 100.0f;
+
+    printf("\n===== RELATORIO DE OCUPACAO =====\n");
+    printf("Total de vagas:      %d\n", TOTAL_VAGAS);
+    printf("Vagas ocupadas:      %d\n", ocupadas);
+    printf("Vagas livres:        %d\n", livres);
+    printf("Percentual ocupacao: %.2f%%\n", pct);
+    printf("Carros cadastrados:  %d\n", carros);
+    printf("Motos cadastradas:   %d\n", motos);
+    printf("Registros ativos:    %d\n", qtd);
+    printf("=================================\n\n");
+}
+
 /* ---------- Menu ---------- */
 void exibirMenu(void) {
     printf("\n===== ESTACIONAMENTO =====\n");
@@ -283,12 +334,15 @@ int main(void) {
 
         switch (opcao) {
             case 1: cadastrarVeiculo(&lista, &qtd, &capacidade, mapa); break;
-            case 2: consultarVeiculo(lista, qtd);   break;   
-            case 3: atualizarVeiculo(lista, qtd);   break;
-            case 4: moverVeiculo(lista, qtd, mapa);   break;
-            case 5: removerVeiculo(lista, &qtd, mapa);   break;   
-            case 0: printf("Encerrando e liberando memoria...\n");      break;   
-            default: printf("Funcionalidade em desenvolvimento.\n");    break;
+            case 2: consultarVeiculo(lista, qtd);                      break;   
+            case 3: atualizarVeiculo(lista, qtd);                      break;
+            case 4: moverVeiculo(lista, qtd, mapa);                    break;
+            case 5: removerVeiculo(lista, &qtd, mapa);                 break;
+            case 6: listarVeiculos(lista, qtd);                        break;
+            case 7: exibirMapa(mapa);                                  break;
+            case 8: exibirRelatorio(lista, qtd, mapa);                 break;
+            case 0: printf("Encerrando e liberando memoria...\n");     break;   
+            default: printf("Funcionalidade em desenvolvimento.\n");   break;
         }
 
     } while (opcao != 0);
