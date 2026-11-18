@@ -32,6 +32,7 @@ void cadastrarVeiculo(Veiculo **lista, int *qtd, int *capacidade,int mapa[FILEIR
 void consultarVeiculo(Veiculo *lista, int qtd);
 void atualizarVeiculo(Veiculo *lista, int qtd); 
 void moverVeiculo(Veiculo *lista, int qtd, int mapa[FILEIRAS][COLUNAS]);
+void removerVeiculo(Veiculo *lista, int *qtd, int mapa[FILEIRAS][COLUNAS]);  // ◀── ADICIONAR
 void exibirMenu(void);
 
 /* ---------- Leitura segura ---------- */
@@ -234,6 +235,21 @@ void moverVeiculo(Veiculo *lista, int qtd, int mapa[FILEIRAS][COLUNAS]) {
     printf("Veiculo %s movido para F%d/C%d.\n", id, fileira, coluna);
 }
 
+void removerVeiculo(Veiculo *lista, int *qtd, int mapa[FILEIRAS][COLUNAS]) {
+    if (*qtd == 0) { printf("Nenhum veiculo cadastrado.\n"); return; }
+    char id[TAM_ID + 1];
+    if (!lerId("Identificador: ", id)) return;
+    int idx = buscarPorId(lista, *qtd, id);
+    if (idx == -1) { printf("Veiculo nao localizado.\n"); return; }
+
+    mapa[lista[idx].fileira - 1][lista[idx].coluna - 1] = 0;
+    for (int i = idx; i < *qtd - 1; i++)
+        lista[i] = lista[i + 1];
+    (*qtd)--;
+
+    printf("Veiculo %s removido. Vaga liberada.\n", id);
+}
+
 /* ---------- Menu ---------- */
 void exibirMenu(void) {
     printf("\n===== ESTACIONAMENTO =====\n");
@@ -270,6 +286,7 @@ int main(void) {
             case 2: consultarVeiculo(lista, qtd);   break;   
             case 3: atualizarVeiculo(lista, qtd);   break;
             case 4: moverVeiculo(lista, qtd, mapa);   break;
+            case 5: removerVeiculo(lista, &qtd, mapa);   break;   
             case 0: printf("Encerrando e liberando memoria...\n");      break;   
             default: printf("Funcionalidade em desenvolvimento.\n");    break;
         }
