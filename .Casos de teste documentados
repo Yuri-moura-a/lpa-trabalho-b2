@@ -1,0 +1,11 @@
+#	Operação	                                    Esperado	                                    Obtido	        Status
+T01	Iniciar sem cadastro →                          opções 7 e 8	20 livres, 0,00%, mapa todo .	ok	              ✅
+T02	Cadastrar ABC1D23 F1/C1 	                    1 registro, F1/C1 = X	                        ok	              ✅
+T03	Cadastrar abc1d23 (minúsculo)	                Recusa duplicidade	                            ok	              ✅
+T04	Cadastrar em vaga ocupada / índice inválido	    Recusa sem alterar mapa	                        ok	              ✅
+T05	3º cadastro (realloc 2→4)                   	Mensagem [info] Colecao ampliada	            ok	              ✅
+T06	Atualizar descrição e categoria	                Dados alterados, sem duplicar	                ok	              ✅
+T07	Mover ABC1D23 → F2/C3                           Origem livre, destino X	                        ok	              ✅
+T08	Remover XYZ9K87                             	Registro e vaga liberados	                    ok	              ✅
+T09	Ocupar 20 vagas + tentar 21º                	"Estacionamento lotado"	                        ok	              ✅
+T10	Encerrar (0)	                                free executado, sem leaks	                    ok	              ✅
